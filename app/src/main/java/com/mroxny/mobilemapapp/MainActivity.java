@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private MyLocationNewOverlay mLocationOverlay;
     private CompassOverlay mCompassOverlay;
     private ScaleBarOverlay mScaleOverlay;
+    private Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +65,18 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
         }
-
+        location = new Location();
         Init();
     }
 
     public void GoToMyLocation(View view){
-        GeoPoint myLocation = this.mLocationOverlay.getMyLocation();
-        map.getController().animateTo(myLocation);
+        if(location.isGpsOn(this)) {
+            GeoPoint myLocation = this.mLocationOverlay.getMyLocation();
+            map.getController().animateTo(myLocation);
+            return;
+        }
+        location.SetRequest(this);
+        if(location.isGpsOn(this)) GoToMyLocation(view);
     }
 
     public void ZoomIn(View view){
@@ -121,12 +127,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void SetLastLocation(){
-        GeoPoint myLocation = this.mLocationOverlay.getMyLocation();
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong("Lat",Double.doubleToRawLongBits(myLocation.getLatitude()));
-        editor.putLong("Lon",Double.doubleToRawLongBits(myLocation.getLongitude()));
-        editor.commit();
+        if(location.isGpsOn(this)) {
+            GeoPoint myLocation = this.mLocationOverlay.getMyLocation();
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putLong("Lat",Double.doubleToRawLongBits(myLocation.getLatitude()));
+            editor.putLong("Lon",Double.doubleToRawLongBits(myLocation.getLongitude()));
+            editor.commit();
+        }
     }
 
 
