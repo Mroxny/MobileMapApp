@@ -8,6 +8,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private MyLocationNewOverlay mLocationOverlay;
     private CompassOverlay mCompassOverlay;
     private ScaleBarOverlay mScaleOverlay;
+    private RotationGestureOverlay mRotationGestureOverlay;
     private Location location;
 
     @Override
@@ -95,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
         map.setMinZoomLevel(4.0);
         map.setMaxZoomLevel(21.0);
         map.setMultiTouchControls(true);
+
+        mRotationGestureOverlay  = new RotationGestureOverlay(map);
+        mRotationGestureOverlay.setEnabled(true);
+        map.getOverlays().add(mRotationGestureOverlay);
+
         IMapController mapController = map.getController();
         mapController.setZoom(15.0);
         GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
@@ -104,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context),map);
         this.mLocationOverlay.enableMyLocation();
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_outline_location_on);
+        this.mLocationOverlay.setPersonIcon(icon);
         map.getOverlays().add(this.mLocationOverlay);
 
         /*this.mScaleOverlay = new ScaleBarOverlay(map);

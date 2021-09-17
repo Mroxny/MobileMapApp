@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.MobileMapApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">#3C3C3C</item>
+        <item name="colorPrimary">#F8F8F8</item>
+        <item name="colorPrimaryVariant">#F8F8F8</item>
+        <item name="colorOnPrimary">#141414</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#F8F8F8</item>
         <item name="colorSecondaryVariant">#F8F8F8</item>
