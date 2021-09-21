@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.osmdroid.views.overlay.TilesOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
@@ -73,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
         Init();
     }
 
+    public void goSearch(View view){
+        Intent intent = new Intent(this,SearchActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     public void GoToMyLocation(View view){
         if(location.isGpsOn(this)) {
             GeoPoint myLocation = this.mLocationOverlay.getMyLocation();
@@ -105,16 +113,20 @@ public class MainActivity extends AppCompatActivity {
         map.getOverlays().add(mRotationGestureOverlay);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(15.0);
-        GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
-        mapController.setCenter(GetLastLocation());
+        if(GetLastLocation() != null){
+            mapController.setZoom(15.0);
+            mapController.setCenter(GetLastLocation());
+        }
+        else{
+            mapController.setZoom(4.0);
+            mapController.setCenter(new GeoPoint(0.0,0.0));
+        }
+
 
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
         this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(context),map);
         this.mLocationOverlay.enableMyLocation();
-        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_outline_location_on);
-        this.mLocationOverlay.setPersonIcon(icon);
         map.getOverlays().add(this.mLocationOverlay);
 
         /*this.mScaleOverlay = new ScaleBarOverlay(map);
@@ -123,28 +135,31 @@ public class MainActivity extends AppCompatActivity {
         this.mScaleOverlay.setScaleBarOffset(map.getHeight(),map.getWidth()/2);
         map.getOverlays().add(this.mScaleOverlay);*/
 
-        this.mCompassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
+        /*this.mCompassOverlay = new CompassOverlay(context, new InternalCompassOrientationProvider(context), map);
         this.mCompassOverlay.enableCompass();
         this.mCompassOverlay.setCompassCenter(40,60);
-        map.getOverlays().add(this.mCompassOverlay);
+        map.getOverlays().add(this.mCompassOverlay);*/
 
     }
 
     private GeoPoint GetLastLocation(){
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        Double lat = Double.longBitsToDouble(sharedPref.getLong("Lat",0));
-        Double lon = Double.longBitsToDouble(sharedPref.getLong("Lon",0));
-        return new GeoPoint(lat,lon);
+        Double lat = Double.longBitsToDouble(sharedPref.getLong("Lat",1000));
+        Double lon = Double.longBitsToDouble(sharedPref.getLong("Lon",1000));
+        if(lat != 1000 && lon != 1000) return new GeoPoint(lat,lon);
+        else return null;
     }
 
     private void SetLastLocation(){
         if(location.isGpsOn(this)) {
             GeoPoint myLocation = this.mLocationOverlay.getMyLocation();
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putLong("Lat",Double.doubleToRawLongBits(myLocation.getLatitude()));
-            editor.putLong("Lon",Double.doubleToRawLongBits(myLocation.getLongitude()));
-            editor.commit();
+            if(myLocation!=null){
+                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong("Lat",Double.doubleToRawLongBits(myLocation.getLatitude()));
+                editor.putLong("Lon",Double.doubleToRawLongBits(myLocation.getLongitude()));
+                editor.commit();
+            }
         }
     }
 

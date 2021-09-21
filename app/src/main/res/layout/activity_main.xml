@@ -16,6 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/locButton"
         android:layout_width="wrap_content"
@@ -58,6 +60,28 @@
         android:src="@drawable/ic_round_add_"
         app:layout_constraintBottom_toTopOf="@+id/zoomIn"
         app:layout_constraintEnd_toEndOf="@+id/mapView" />
+
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:src="@drawable/ic_round_search"
+        android:backgroundTint="?attr/colorOnPrimary"
+        android:onClick="goSearch" />
+
+</LinearLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
